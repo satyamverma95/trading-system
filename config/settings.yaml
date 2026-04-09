@@ -1,0 +1,80 @@
+# ============================================================
+# TRADING SYSTEM - CENTRAL CONFIGURATION
+# ============================================================
+
+project:
+  name: "trading-system"
+  version: "1.0.0"
+  env: "development"  # development | production
+
+# ------------------------------------------------------------
+# DATA PROVIDER
+# Switch between 'yfinance' (free) and 'zerodha' (live)
+# ------------------------------------------------------------
+data_provider: "yfinance"  # yfinance | zerodha
+
+# ------------------------------------------------------------
+# UNIVERSE - Stocks to track
+# NSE symbols: append .NS for yfinance
+# ------------------------------------------------------------
+universe:
+  indices:
+    - "^NSEI"       # Nifty 50
+    - "^NSEBANK"    # Bank Nifty
+
+  large_cap:
+    - "RELIANCE.NS"
+    - "TCS.NS"
+    - "HDFCBANK.NS"
+    - "INFY.NS"
+    - "ICICIBANK.NS"
+    - "HINDUNILVR.NS"
+    - "SBIN.NS"
+    - "BAJFINANCE.NS"
+    - "BHARTIARTL.NS"
+    - "KOTAKBANK.NS"
+
+  watchlist:
+    - "TATAMOTORS.NS"
+    - "WIPRO.NS"
+    - "AXISBANK.NS"
+
+# ------------------------------------------------------------
+# HISTORICAL DATA SETTINGS
+# ------------------------------------------------------------
+historical:
+  default_period: "2y"       # 1mo, 3mo, 6mo, 1y, 2y, 5y
+  default_interval: "1d"     # 1m, 5m, 15m, 30m, 1h, 1d, 1wk
+  start_date: "2022-01-01"
+  end_date: null             # null = today
+
+# ------------------------------------------------------------
+# PATHS
+# ------------------------------------------------------------
+paths:
+  raw_data: "data/raw/"
+  processed_data: "data/processed/"
+  universe: "data/universe/"
+  logs: "logs/"
+
+# ------------------------------------------------------------
+# INDICATORS - default parameters
+# ------------------------------------------------------------
+indicators:
+  rsi_period: 14
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  bb_period: 20
+  bb_std: 2
+  atr_period: 14
+  sma_periods: [20, 50, 200]
+  ema_periods: [9, 21, 55]
+
+# ------------------------------------------------------------
+# ZERODHA (Phase 2/3 - leave blank for now)
+# ------------------------------------------------------------
+zerodha:
+  api_key: ""
+  api_secret: ""
+  redirect_url: "https://127.0.0.1:5000/"
