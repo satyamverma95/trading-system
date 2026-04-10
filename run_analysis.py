@@ -138,19 +138,12 @@ def process_symbol(row: pd.Series, config: dict,
 
     try:
         logger.info(f"Processing {symbol} | {period} | {interval}")
-
-        # Fetch data
         df = provider.get_historical_data(symbol, period=period, interval=interval)
-
-        # Add indicators
         df = ind.add_all(df)
-
-        # Print summary
         print_summary(df, symbol, period, interval)
 
-        # Save to parquet
         if save:
-            path = save_to_parquet(df, symbol, config["paths"]["processed_data"])
+            path = save_to_parquet(df, symbol, config["paths"]["processed_data"], interval)
             logger.info(f"Saved → {path}")
 
         return True

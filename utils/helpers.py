@@ -32,25 +32,22 @@ def get_all_symbols(config: dict) -> List[str]:
     return list(set(symbols))  # deduplicate
 
 
-def save_to_parquet(df: pd.DataFrame, symbol: str, folder: str) -> str:
-    """
-    Save a DataFrame to parquet format.
-    Parquet is faster and smaller than CSV for time-series data.
-    
-    Returns the saved file path.
-    """
+def save_to_parquet(df: pd.DataFrame, symbol: str, folder: str, interval: str = "") -> str:
+    """Save DataFrame to parquet. Filename includes interval to avoid overwrites."""
     os.makedirs(folder, exist_ok=True)
     clean_symbol = symbol.replace(".", "_").replace("^", "idx_")
-    filename = f"{clean_symbol}.parquet"
+    suffix = f"_{interval}" if interval else ""
+    filename = f"{clean_symbol}{suffix}.parquet"
     filepath = os.path.join(folder, filename)
     df.to_parquet(filepath, index=True)
     return filepath
 
 
-def load_from_parquet(symbol: str, folder: str) -> pd.DataFrame:
+def load_from_parquet(symbol: str, folder: str, interval: str = "") -> pd.DataFrame:
     """Load a previously saved symbol DataFrame from parquet."""
     clean_symbol = symbol.replace(".", "_").replace("^", "idx_")
-    filepath = os.path.join(folder, f"{clean_symbol}.parquet")
+    suffix = f"_{interval}" if interval else ""
+    filepath = os.path.join(folder, f"{clean_symbol}{suffix}.parquet")
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"No cached data found for {symbol} at {filepath}")
     return pd.read_parquet(filepath)
