@@ -1,6 +1,12 @@
 logs/
 data/raw/
 data/processed/
+data/instruments*
 .env
+config/secrets.yaml
+config/.session.json
+.session.json
 __pycache__/
 *.pyc
+
+

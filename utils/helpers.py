@@ -10,10 +10,18 @@ from datetime import datetime
 from typing import List
 
 
-def load_config(path: str = "config/settings.yaml") -> dict:
-    """Load YAML config file."""
-    with open(path, "r") as f:
-        return yaml.safe_load(f)
+def load_config(path: str = "config/settings.yaml", secrets_path: str = "config/secrets.yaml") -> dict:
+    """Load YAML config file and merge secrets if available."""
+    with open(path, "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f) or {}
+
+    if os.path.exists(secrets_path):
+        with open(secrets_path, "r", encoding="utf-8") as f:
+            secrets = yaml.safe_load(f) or {}
+            if "zerodha" in secrets and isinstance(secrets["zerodha"], dict):
+                config.setdefault("zerodha", {}).update(secrets["zerodha"])
+
+    return config
 
 
 def get_all_symbols(config: dict) -> List[str]:
