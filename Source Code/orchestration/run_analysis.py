@@ -6,12 +6,21 @@
 # =================================================================
 
 import argparse
-import pandas as pd
+import sys
 import time
-from utils.helpers import load_config, save_to_parquet
+from pathlib import Path
+
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from source_code.common.config_loader import load_config
+from source_code.common.logger import get_logger
+from utils.helpers import save_to_parquet
 from providers.yfinance_provider import YFinanceProvider
 from analysis.indicators import Indicators
-from utils.logger import get_logger
 
 logger = get_logger(__name__)
 

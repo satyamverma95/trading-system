@@ -6,21 +6,21 @@ project:
   name: "trading-system"
   version: "1.0.0"
   env: "development"  # development | production
+  timezone: "Asia/Kolkata"
+  python_package_root: "source_code"
 
 # ------------------------------------------------------------
 # DATA PROVIDER
-# Switch between 'yfinance' (free) and 'zerodha' (live)
 # ------------------------------------------------------------
 data_provider: "yfinance"  # yfinance | zerodha
 
 # ------------------------------------------------------------
-# UNIVERSE - Stocks to track
-# NSE symbols: append .NS for yfinance
+# MARKET UNIVERSE
 # ------------------------------------------------------------
 universe:
   indices:
-    - "^NSEI"       # Nifty 50
-    - "^NSEBANK"    # Bank Nifty
+    - "^NSEI"
+    - "^NSEBANK"
 
   large_cap:
     - "RELIANCE.NS"
@@ -43,22 +43,43 @@ universe:
 # HISTORICAL DATA SETTINGS
 # ------------------------------------------------------------
 historical:
-  default_period: "2y"       # 1mo, 3mo, 6mo, 1y, 2y, 5y
-  default_interval: "1d"     # 1m, 5m, 15m, 30m, 1h, 1d, 1wk
+  default_period: "2y"
+  default_interval: "1d"
   start_date: "2022-01-01"
-  end_date: null             # null = today
+  end_date: null
 
 # ------------------------------------------------------------
-# PATHS
+# PATHS - all runtime paths must come from config
 # ------------------------------------------------------------
 paths:
-  raw_data: "data/raw/"
-  processed_data: "data/processed/"
-  universe: "data/universe/"
-  logs: "logs/"
+  project_root: "."
+  source_code_dir: "Source Code"
+  config_dir: "config"
+  data_dir: "data"
+  raw_data_dir: "data/raw"
+  bronze_data_dir: "data/bronze"
+  silver_data_dir: "data/silver"
+  gold_data_dir: "data/gold"
+  charts_dir: "data/charts"
+  cache_dir: "data/cache"
+  sessions_dir: "data/sessions"
+  instrument_cache_dir: "data/cache/instruments"
+  input_dir: "data/input"
+  watchlist_file: "data/input/watchlist.csv"
+  session_file: "data/sessions/kite_session.json"
+  logs_dir: "logs"
 
 # ------------------------------------------------------------
-# INDICATORS - default parameters
+# AUTH / SESSION CONFIG
+# ------------------------------------------------------------
+auth:
+  zerodha:
+    enabled: false
+    session_refresh_hour: "06:00"
+    session_file: "data/sessions/kite_session.json"
+
+# ------------------------------------------------------------
+# INDICATORS
 # ------------------------------------------------------------
 indicators:
   rsi_period: 14
@@ -72,9 +93,12 @@ indicators:
   ema_periods: [9, 21, 55]
 
 # ------------------------------------------------------------
-# ZERODHA (Phase 2/3 - leave blank for now)
+# ZERODHA
 # ------------------------------------------------------------
 zerodha:
   api_key: ""
   api_secret: ""
+  user_id: ""
+  password: ""
+  totp_key: ""
   redirect_url: "https://127.0.0.1:5000/"

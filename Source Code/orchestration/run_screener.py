@@ -6,10 +6,18 @@
 # =================================================================
 
 import argparse
+import sys
+from pathlib import Path
+
 import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from source_code.common.config_loader import load_config
+from source_code.common.logger import get_logger
 from analysis.screener import Screener
-from utils.helpers import load_config
-from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
