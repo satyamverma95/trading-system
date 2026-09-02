@@ -1,0 +1,1087 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nifty Signal Desk</title>
+<style>
+:root { --ink:#17212b; --muted:#66737d; --paper:#f4f1ea; --panel:#fffdf8; --line:#ddd8cd; --green:#087f5b; --red:#b42318; --accent:#d97706; }
+* { box-sizing:border-box; } body { margin:0; color:var(--ink); background:radial-gradient(circle at 90% 0%, #f9dfb3 0, transparent 28%), var(--paper); font:15px/1.5 Georgia, serif; }
+main { max-width:1180px; margin:0 auto; padding:42px 22px 64px; }
+.eyebrow { color:var(--accent); font:700 12px/1.2 ui-sans-serif, sans-serif; letter-spacing:2px; text-transform:uppercase; }
+h1 { margin:8px 0 4px; font-size:clamp(32px, 5vw, 58px); line-height:1; font-weight:500; }
+.subtitle { color:var(--muted); margin:0 0 28px; font-family:ui-sans-serif, sans-serif; }
+.stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:25px; }
+.stat { background:var(--panel); border:1px solid var(--line); padding:18px; } .stat strong { display:block; font:700 30px ui-sans-serif, sans-serif; } .stat span { color:var(--muted); font:12px ui-sans-serif, sans-serif; text-transform:uppercase; letter-spacing:1px; }
+.toolbar { display:flex; justify-content:space-between; gap:14px; align-items:center; margin-bottom:12px; }
+input { width:270px; max-width:100%; padding:11px 13px; border:1px solid var(--line); background:var(--panel); font:14px ui-sans-serif, sans-serif; }
+.table-wrap { overflow-x:auto; background:var(--panel); border:1px solid var(--line); } table { width:100%; border-collapse:collapse; font-family:ui-sans-serif, sans-serif; font-size:13px; } th { color:var(--muted); text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.7px; cursor:pointer; } th, td { padding:13px 14px; border-bottom:1px solid var(--line); white-space:nowrap; } tbody tr:hover { background:#fff5df; } .pill { display:inline-block; padding:3px 8px; font-size:11px; font-weight:700; } .bullish { color:var(--green); background:#d9f4e8; } .bearish { color:var(--red); background:#fde1de; }
+@media (max-width:600px) { main { padding:28px 14px 45px; } .stats { grid-template-columns:1fr; } .toolbar { align-items:stretch; flex-direction:column; } input { width:100%; } }
+</style></head><body><main>
+<div class="eyebrow">Trading system / signal review</div><h1>Nifty Signal Desk</h1>
+<p class="subtitle">Latest crossover rankings generated from the pipeline.</p>
+<section class="stats"><div class="stat"><strong>95</strong><span>Ranked symbols</span></div>
+<div class="stat"><strong>52</strong><span>Bullish signals</span></div><div class="stat"><strong>43</strong><span>Bearish signals</span></div></section>
+<div class="toolbar"><strong>Watchlist</strong><input id="search" type="search" placeholder="Filter by symbol or state" aria-label="Filter signals"></div>
+<div class="table-wrap"><table class="dataframe signals-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rank</th>
+      <th>Symbol</th>
+      <th>Close</th>
+      <th>State</th>
+      <th>Days_Since</th>
+      <th>Score</th>
+      <th>Last_Crossover_Type</th>
+      <th>SMA_20</th>
+      <th>SMA_50</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>BEL</td>
+      <td>405.750000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1.0</td>
+      <td>99.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>408.758340</td>
+      <td>406.659241</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>IDEA</td>
+      <td>14.530000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>2.0</td>
+      <td>98.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>13.952500</td>
+      <td>13.779800</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>NMDC</td>
+      <td>85.750000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>8.0</td>
+      <td>92.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>85.556000</td>
+      <td>84.903000</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>LT</td>
+      <td>3981.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>9.0</td>
+      <td>91.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>4053.755005</td>
+      <td>3990.037998</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>MCX</td>
+      <td>3286.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>12.0</td>
+      <td>88.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>3070.757874</td>
+      <td>2890.017529</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>RELIANCE</td>
+      <td>1313.099976</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>12.0</td>
+      <td>88.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1311.915002</td>
+      <td>1303.342002</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>KOTAKBANK</td>
+      <td>423.500000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>13.0</td>
+      <td>87.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>402.575002</td>
+      <td>393.845983</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>PETRONET</td>
+      <td>289.200012</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>13.0</td>
+      <td>87.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>286.970001</td>
+      <td>281.514000</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>SAIL</td>
+      <td>196.500000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>13.0</td>
+      <td>87.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>180.625499</td>
+      <td>172.544399</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>JINDALSTEL</td>
+      <td>1159.400024</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>19.0</td>
+      <td>81.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1131.246533</td>
+      <td>1085.035942</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>HINDALCO</td>
+      <td>1009.700012</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>20.0</td>
+      <td>80.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1040.090002</td>
+      <td>993.205582</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>NATIONALUM</td>
+      <td>370.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>20.0</td>
+      <td>80.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>388.382864</td>
+      <td>363.840253</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>BERGEPAINT</td>
+      <td>488.049988</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>22.0</td>
+      <td>78.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>523.844997</td>
+      <td>513.440855</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>INFY</td>
+      <td>1140.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>27.0</td>
+      <td>73.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1146.920001</td>
+      <td>1106.645997</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>JSWSTEEL</td>
+      <td>1306.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>27.0</td>
+      <td>73.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1300.970001</td>
+      <td>1268.298728</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>SIEMENS</td>
+      <td>4018.899902</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>28.0</td>
+      <td>72.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>3993.634998</td>
+      <td>3772.797910</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>INDIANB</td>
+      <td>878.799988</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>29.0</td>
+      <td>71.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>882.845007</td>
+      <td>849.043004</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>LTTS</td>
+      <td>3505.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>34.0</td>
+      <td>66.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>3565.869971</td>
+      <td>3437.771992</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>JIOFIN</td>
+      <td>236.899994</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>35.0</td>
+      <td>65.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>246.509264</td>
+      <td>243.260930</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>TCS</td>
+      <td>2348.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>35.0</td>
+      <td>65.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>2341.099988</td>
+      <td>2259.178171</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>JUBLFOOD</td>
+      <td>486.500000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>36.0</td>
+      <td>64.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>496.559999</td>
+      <td>457.680961</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>PERSISTENT</td>
+      <td>5690.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>36.0</td>
+      <td>64.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>5596.925000</td>
+      <td>5258.176094</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>HEROMOTOCO</td>
+      <td>5300.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>37.0</td>
+      <td>63.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>5678.550000</td>
+      <td>5264.652686</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>BAJAJ-AUTO</td>
+      <td>12130.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>40.0</td>
+      <td>60.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>11792.350000</td>
+      <td>11061.420000</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>ICICIPRULI</td>
+      <td>499.500000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>40.0</td>
+      <td>60.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>505.892499</td>
+      <td>503.417000</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>PPLPHARMA</td>
+      <td>213.779999</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>47.0</td>
+      <td>53.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>211.776499</td>
+      <td>192.904599</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>TECHM</td>
+      <td>1623.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>49.0</td>
+      <td>51.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1614.235004</td>
+      <td>1553.224009</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>NESTLEIND</td>
+      <td>1425.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>50.0</td>
+      <td>50.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1480.424994</td>
+      <td>1465.172639</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>M&amp;M</td>
+      <td>3190.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>56.0</td>
+      <td>44.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>3392.970007</td>
+      <td>3272.901890</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>BAJAJFINSV</td>
+      <td>1990.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>58.0</td>
+      <td>42.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>2014.520001</td>
+      <td>1940.805815</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>PAYTM</td>
+      <td>1619.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>58.0</td>
+      <td>42.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1611.324994</td>
+      <td>1416.466001</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>TVSMOTOR</td>
+      <td>4200.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>58.0</td>
+      <td>42.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>4364.794995</td>
+      <td>4024.756001</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>BHARTIARTL</td>
+      <td>1862.800049</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>62.0</td>
+      <td>38.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1922.609998</td>
+      <td>1909.113518</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>TITAN</td>
+      <td>5074.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>64.0</td>
+      <td>36.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>5077.690015</td>
+      <td>4805.557627</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>BAJFINANCE</td>
+      <td>1055.900024</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>65.0</td>
+      <td>35.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1086.160010</td>
+      <td>1060.418411</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>OBEROIRLTY</td>
+      <td>1866.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>65.0</td>
+      <td>35.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1852.874994</td>
+      <td>1850.027065</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>SBIN</td>
+      <td>1020.900024</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>65.0</td>
+      <td>35.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1057.834991</td>
+      <td>1043.163997</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>SHRIRAMFIN</td>
+      <td>1047.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>65.0</td>
+      <td>35.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1113.435004</td>
+      <td>1072.178540</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>PNB</td>
+      <td>117.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>71.0</td>
+      <td>29.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>116.140001</td>
+      <td>111.445001</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>ICICIBANK</td>
+      <td>1426.500000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>72.0</td>
+      <td>28.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1425.430005</td>
+      <td>1415.955547</td>
+    </tr>
+    <tr>
+      <td>41</td>
+      <td>NAUKRI</td>
+      <td>1343.699951</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>76.0</td>
+      <td>24.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1333.295007</td>
+      <td>1222.852013</td>
+    </tr>
+    <tr>
+      <td>42</td>
+      <td>MPHASIS</td>
+      <td>2480.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>79.0</td>
+      <td>21.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>2466.269995</td>
+      <td>2367.401270</td>
+    </tr>
+    <tr>
+      <td>43</td>
+      <td>TORNTPHARM</td>
+      <td>5012.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>111.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>4945.850000</td>
+      <td>4906.270010</td>
+    </tr>
+    <tr>
+      <td>44</td>
+      <td>PIDILITIND</td>
+      <td>1637.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>117.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1666.209998</td>
+      <td>1620.563982</td>
+    </tr>
+    <tr>
+      <td>45</td>
+      <td>INDUSINDBK</td>
+      <td>978.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>119.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1010.739999</td>
+      <td>1002.918000</td>
+    </tr>
+    <tr>
+      <td>46</td>
+      <td>MOTHERSON</td>
+      <td>163.300003</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>124.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>167.264500</td>
+      <td>154.814355</td>
+    </tr>
+    <tr>
+      <td>47</td>
+      <td>NYKAA</td>
+      <td>337.399994</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>127.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>332.279999</td>
+      <td>326.484000</td>
+    </tr>
+    <tr>
+      <td>48</td>
+      <td>BOSCHLTD</td>
+      <td>47250.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>132.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>47198.750000</td>
+      <td>43532.341406</td>
+    </tr>
+    <tr>
+      <td>49</td>
+      <td>SOLARINDS</td>
+      <td>20600.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>132.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>19749.500000</td>
+      <td>18901.238633</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>OFSS</td>
+      <td>12158.000000</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>138.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>11848.300000</td>
+      <td>11490.940000</td>
+    </tr>
+    <tr>
+      <td>51</td>
+      <td>SONACOMS</td>
+      <td>782.650024</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>138.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>808.377499</td>
+      <td>740.186000</td>
+    </tr>
+    <tr>
+      <td>52</td>
+      <td>AUROPHARMA</td>
+      <td>1648.199951</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>177.0</td>
+      <td>0.0</td>
+      <td><span class="pill bullish">BULLISH</span></td>
+      <td>1640.550006</td>
+      <td>1594.621997</td>
+    </tr>
+    <tr>
+      <td>53</td>
+      <td>APOLLOHOSP</td>
+      <td>8719.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>8791.356494</td>
+      <td>8811.758301</td>
+    </tr>
+    <tr>
+      <td>54</td>
+      <td>INDIGO</td>
+      <td>5020.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>5224.500000</td>
+      <td>5256.612002</td>
+    </tr>
+    <tr>
+      <td>55</td>
+      <td>MARICO</td>
+      <td>829.349976</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>847.677496</td>
+      <td>849.125645</td>
+    </tr>
+    <tr>
+      <td>56</td>
+      <td>MARUTI</td>
+      <td>12849.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>13658.650000</td>
+      <td>13718.890332</td>
+    </tr>
+    <tr>
+      <td>57</td>
+      <td>ASIANPAINT</td>
+      <td>2527.500000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2664.130005</td>
+      <td>2686.429985</td>
+    </tr>
+    <tr>
+      <td>58</td>
+      <td>INDHOTEL</td>
+      <td>727.700012</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>5.0</td>
+      <td>2.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>725.102502</td>
+      <td>729.361002</td>
+    </tr>
+    <tr>
+      <td>59</td>
+      <td>SBILIFE</td>
+      <td>1719.900024</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>5.0</td>
+      <td>2.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1789.465002</td>
+      <td>1814.946003</td>
+    </tr>
+    <tr>
+      <td>60</td>
+      <td>PRESTIGE</td>
+      <td>1582.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>12.0</td>
+      <td>6.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1598.996594</td>
+      <td>1625.689260</td>
+    </tr>
+    <tr>
+      <td>61</td>
+      <td>RECLTD</td>
+      <td>316.450012</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>12.0</td>
+      <td>6.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>333.643185</td>
+      <td>347.637250</td>
+    </tr>
+    <tr>
+      <td>62</td>
+      <td>SHREECEM</td>
+      <td>23680.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>13.0</td>
+      <td>6.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>24691.500000</td>
+      <td>25741.245508</td>
+    </tr>
+    <tr>
+      <td>63</td>
+      <td>AMBUJACEM</td>
+      <td>402.700012</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>14.0</td>
+      <td>7.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>415.705000</td>
+      <td>425.461000</td>
+    </tr>
+    <tr>
+      <td>64</td>
+      <td>NHPC</td>
+      <td>75.650002</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>14.0</td>
+      <td>7.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>76.526395</td>
+      <td>78.201923</td>
+    </tr>
+    <tr>
+      <td>65</td>
+      <td>PIIND</td>
+      <td>2393.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>14.0</td>
+      <td>7.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2525.970032</td>
+      <td>2605.305308</td>
+    </tr>
+    <tr>
+      <td>66</td>
+      <td>IOC</td>
+      <td>137.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>15.0</td>
+      <td>7.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>138.542496</td>
+      <td>139.214934</td>
+    </tr>
+    <tr>
+      <td>67</td>
+      <td>MANKIND</td>
+      <td>2391.500000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>15.0</td>
+      <td>7.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2401.334985</td>
+      <td>2472.733999</td>
+    </tr>
+    <tr>
+      <td>68</td>
+      <td>MAXHEALTH</td>
+      <td>994.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>19.0</td>
+      <td>9.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1018.375000</td>
+      <td>1071.937983</td>
+    </tr>
+    <tr>
+      <td>69</td>
+      <td>ADANIENT</td>
+      <td>2891.800049</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>20.0</td>
+      <td>10.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>3010.105005</td>
+      <td>3061.612007</td>
+    </tr>
+    <tr>
+      <td>70</td>
+      <td>HINDPETRO</td>
+      <td>359.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>20.0</td>
+      <td>10.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>369.323503</td>
+      <td>373.421989</td>
+    </tr>
+    <tr>
+      <td>71</td>
+      <td>PAGEIND</td>
+      <td>36200.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>22.0</td>
+      <td>11.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>36620.999219</td>
+      <td>38975.787344</td>
+    </tr>
+    <tr>
+      <td>72</td>
+      <td>TORNTPOWER</td>
+      <td>1248.900024</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>27.0</td>
+      <td>13.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1274.604999</td>
+      <td>1356.636001</td>
+    </tr>
+    <tr>
+      <td>73</td>
+      <td>ADANIGREEN</td>
+      <td>1296.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>33.0</td>
+      <td>16.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1319.260004</td>
+      <td>1416.179995</td>
+    </tr>
+    <tr>
+      <td>74</td>
+      <td>ADANIPORTS</td>
+      <td>1672.699951</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>34.0</td>
+      <td>17.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1680.654993</td>
+      <td>1748.601992</td>
+    </tr>
+    <tr>
+      <td>75</td>
+      <td>HINDUNILVR</td>
+      <td>1975.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>34.0</td>
+      <td>17.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2037.254993</td>
+      <td>2099.636006</td>
+    </tr>
+    <tr>
+      <td>76</td>
+      <td>TRENT</td>
+      <td>2852.300049</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>34.0</td>
+      <td>17.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2946.305005</td>
+      <td>2996.586006</td>
+    </tr>
+    <tr>
+      <td>77</td>
+      <td>LICHSGFIN</td>
+      <td>541.250000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>36.0</td>
+      <td>18.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>505.924167</td>
+      <td>522.266671</td>
+    </tr>
+    <tr>
+      <td>78</td>
+      <td>AXISBANK</td>
+      <td>1253.900024</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>40.0</td>
+      <td>20.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1245.065015</td>
+      <td>1275.047620</td>
+    </tr>
+    <tr>
+      <td>79</td>
+      <td>POLYCAB</td>
+      <td>8804.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>44.0</td>
+      <td>22.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>9151.125000</td>
+      <td>9215.560000</td>
+    </tr>
+    <tr>
+      <td>80</td>
+      <td>ICICIGI</td>
+      <td>1537.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>47.0</td>
+      <td>23.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1612.195007</td>
+      <td>1673.840002</td>
+    </tr>
+    <tr>
+      <td>81</td>
+      <td>JSWENERGY</td>
+      <td>539.799988</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>47.0</td>
+      <td>23.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>548.547501</td>
+      <td>553.576006</td>
+    </tr>
+    <tr>
+      <td>82</td>
+      <td>BANKBARODA</td>
+      <td>241.199997</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>48.0</td>
+      <td>24.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>244.768999</td>
+      <td>248.876599</td>
+    </tr>
+    <tr>
+      <td>83</td>
+      <td>TIINDIA</td>
+      <td>2720.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>48.0</td>
+      <td>24.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2827.509998</td>
+      <td>2873.506299</td>
+    </tr>
+    <tr>
+      <td>84</td>
+      <td>ADANIPOWER</td>
+      <td>207.699997</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>62.0</td>
+      <td>31.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>206.634500</td>
+      <td>213.276401</td>
+    </tr>
+    <tr>
+      <td>85</td>
+      <td>INDUSTOWER</td>
+      <td>379.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>68.0</td>
+      <td>34.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>377.049896</td>
+      <td>378.623698</td>
+    </tr>
+    <tr>
+      <td>86</td>
+      <td>TATACONSUM</td>
+      <td>1012.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>77.0</td>
+      <td>38.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>1061.559998</td>
+      <td>1084.645999</td>
+    </tr>
+    <tr>
+      <td>87</td>
+      <td>TATASTEEL</td>
+      <td>183.850006</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>83.0</td>
+      <td>41.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>185.935502</td>
+      <td>186.983201</td>
+    </tr>
+    <tr>
+      <td>88</td>
+      <td>NTPC</td>
+      <td>330.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>90.0</td>
+      <td>45.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>333.478358</td>
+      <td>340.792900</td>
+    </tr>
+    <tr>
+      <td>89</td>
+      <td>ITC</td>
+      <td>266.299988</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>91.0</td>
+      <td>45.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>272.619998</td>
+      <td>279.770999</td>
+    </tr>
+    <tr>
+      <td>90</td>
+      <td>ONGC</td>
+      <td>237.500000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>91.0</td>
+      <td>45.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>236.747000</td>
+      <td>240.354799</td>
+    </tr>
+    <tr>
+      <td>91</td>
+      <td>PFC</td>
+      <td>346.500000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>91.0</td>
+      <td>45.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>367.820044</td>
+      <td>392.767910</td>
+    </tr>
+    <tr>
+      <td>92</td>
+      <td>IRCTC</td>
+      <td>472.600006</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>92.0</td>
+      <td>46.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>495.525000</td>
+      <td>499.239999</td>
+    </tr>
+    <tr>
+      <td>93</td>
+      <td>MUTHOOTFIN</td>
+      <td>2937.699951</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>96.0</td>
+      <td>48.0</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>2972.369995</td>
+      <td>2999.587988</td>
+    </tr>
+    <tr>
+      <td>94</td>
+      <td>POWERGRID</td>
+      <td>266.799988</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>97.0</td>
+      <td>48.5</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>267.539998</td>
+      <td>278.152000</td>
+    </tr>
+    <tr>
+      <td>95</td>
+      <td>PATANJALI</td>
+      <td>345.000000</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>-</td>
+      <td>0.0</td>
+      <td>NONE</td>
+      <td>349.595930</td>
+      <td>365.097094</td>
+    </tr>
+  </tbody>
+</table></div></main>
+<script>const search=document.getElementById('search'); search.addEventListener('input',()=>{const q=search.value.toLowerCase(); document.querySelectorAll('tbody tr').forEach(r=>{r.hidden=!r.innerText.toLowerCase().includes(q)})}); document.querySelectorAll('th').forEach((h,i)=>h.addEventListener('click',()=>{const b=document.querySelector('tbody'); [...b.rows].sort((a,c)=>a.cells[i].innerText.localeCompare(c.cells[i].innerText,undefined,{numeric:true})).forEach(r=>b.appendChild(r))}));</script>
+</body></html>
