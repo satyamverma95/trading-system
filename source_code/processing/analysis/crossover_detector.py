@@ -141,11 +141,10 @@ class CrossoverDetector:
         # =====================================
         # STEP 3: Track Current State
         # =====================================
-        df_copy['Crossover_State'] = 'BEARISH'
-        df_copy.loc[is_above, 'Crossover_State'] = 'BULLISH'
-        
-        # Forward fill state for first row (if NaN in SMAs)
-        df_copy['Crossover_State'] = df_copy['Crossover_State'].bfill()
+        has_sma_values = sma_fast.notna() & sma_slow.notna()
+        df_copy['Crossover_State'] = 'UNKNOWN'
+        df_copy.loc[has_sma_values & ~is_above, 'Crossover_State'] = 'BEARISH'
+        df_copy.loc[has_sma_values & is_above, 'Crossover_State'] = 'BULLISH'
         
         # =====================================
         # STEP 4: Calculate Days Since Crossover

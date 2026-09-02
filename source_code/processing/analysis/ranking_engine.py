@@ -245,20 +245,24 @@ class RankingEngine:
         Returns:
             Sorted DataFrame
         """
+        rankings_df = rankings_df.copy()
+        state_order = {'BULLISH': 0, 'BEARISH': 1, 'UNKNOWN': 2}
+        rankings_df['_State_Order'] = rankings_df['State'].map(state_order).fillna(3)
+
         if self.rank_by == 'days_since':
             # Fresher signals first (fewer days = higher priority)
             # Tie-breaker: stronger signals first (higher score)
             sorted_df = rankings_df.sort_values(
-                by=['State', 'Days_Since', 'Score'],
-                ascending=[False, True, False]  # BULLISH first, then fresher, then stronger
+                by=['_State_Order', 'Days_Since', 'Score'],
+                ascending=[True, True, False]
             )
         
         elif self.rank_by == 'score':
             # Stronger signals first (higher score = higher priority)
             # Tie-breaker: fresher signals first (fewer days)
             sorted_df = rankings_df.sort_values(
-                by=['State', 'Score', 'Days_Since'],
-                ascending=[False, False, True]  # BULLISH first, then stronger, then fresher
+                by=['_State_Order', 'Score', 'Days_Since'],
+                ascending=[True, False, True]
             )
         
         elif self.rank_by == 'hybrid':
@@ -268,18 +272,18 @@ class RankingEngine:
                 lambda row: self.calculate_composite_score(row), axis=1
             )
             sorted_df = rankings_df.sort_values(
-                by=['State', 'Composite_Score'],
-                ascending=[False, False]  # BULLISH first, then higher composite
+                by=['_State_Order', 'Composite_Score'],
+                ascending=[True, False]
             )
         
         else:
             logger.warning(f"Unknown rank_by={self.rank_by}, using 'days_since'")
             sorted_df = rankings_df.sort_values(
-                by=['State', 'Days_Since', 'Score'],
-                ascending=[False, True, False]
+                by=['_State_Order', 'Days_Since', 'Score'],
+                ascending=[True, True, False]
             )
         
-        return sorted_df.reset_index(drop=True)
+        return sorted_df.drop(columns=['_State_Order']).reset_index(drop=True)
     
     def calculate_composite_score(
         self,

@@ -4,8 +4,10 @@
 # =================================================================
 
 import logging
+from pathlib import Path
 from typing import Optional
 from kiteconnect import KiteConnect
+import yaml
 
 from source_code.common.config_loader import load_config
 
@@ -75,4 +77,11 @@ def load_session() -> Optional[dict]:
 
 def save_session(access_token: str, public_token: Optional[str] = None):
     """Save Zerodha session."""
-    logger.debug(f"Saving session with access_token: {access_token[:10]}...")
+    root = Path(__file__).resolve().parents[3]
+    secrets_path = root / "config" / "secrets.yaml"
+    with secrets_path.open("r", encoding="utf-8") as file_handle:
+        secrets = yaml.safe_load(file_handle) or {}
+    secrets.setdefault("zerodha", {})["access_token"] = access_token
+    with secrets_path.open("w", encoding="utf-8") as file_handle:
+        yaml.safe_dump(secrets, file_handle, default_flow_style=False, sort_keys=False)
+    logger.info("Saved Zerodha access token to secrets.yaml")
