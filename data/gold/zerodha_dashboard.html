@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nifty Signal Desk</title>
+<style>
+:root { --ink:#17212b; --muted:#66737d; --paper:#f4f1ea; --panel:#fffdf8; --line:#ddd8cd; --green:#087f5b; --red:#b42318; --accent:#d97706; }
+* { box-sizing:border-box; } body { margin:0; color:var(--ink); background:radial-gradient(circle at 90% 0%, #f9dfb3 0, transparent 28%), var(--paper); font:15px/1.5 Georgia, serif; }
+main { max-width:1180px; margin:0 auto; padding:42px 22px 64px; }
+.eyebrow { color:var(--accent); font:700 12px/1.2 ui-sans-serif, sans-serif; letter-spacing:2px; text-transform:uppercase; }
+h1 { margin:8px 0 4px; font-size:clamp(32px, 5vw, 58px); line-height:1; font-weight:500; }
+.subtitle { color:var(--muted); margin:0 0 28px; font-family:ui-sans-serif, sans-serif; }
+.stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:25px; }
+.stat { background:var(--panel); border:1px solid var(--line); padding:18px; } .stat strong { display:block; font:700 30px ui-sans-serif, sans-serif; } .stat span { color:var(--muted); font:12px ui-sans-serif, sans-serif; text-transform:uppercase; letter-spacing:1px; }
+.toolbar { display:flex; justify-content:space-between; gap:14px; align-items:center; margin-bottom:12px; }
+input { width:270px; max-width:100%; padding:11px 13px; border:1px solid var(--line); background:var(--panel); font:14px ui-sans-serif, sans-serif; }
+.table-wrap { overflow-x:auto; background:var(--panel); border:1px solid var(--line); } table { width:100%; border-collapse:collapse; font-family:ui-sans-serif, sans-serif; font-size:13px; } th { color:var(--muted); text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.7px; cursor:pointer; } th, td { padding:13px 14px; border-bottom:1px solid var(--line); white-space:nowrap; } tbody tr:hover { background:#fff5df; } .pill { display:inline-block; padding:3px 8px; font-size:11px; font-weight:700; } .bullish { color:var(--green); background:#d9f4e8; } .bearish { color:var(--red); background:#fde1de; }
+@media (max-width:600px) { main { padding:28px 14px 45px; } .stats { grid-template-columns:1fr; } .toolbar { align-items:stretch; flex-direction:column; } input { width:100%; } }
+</style></head><body><main>
+<div class="eyebrow">Trading system / signal review</div><h1>Nifty Signal Desk</h1>
+<p class="subtitle">Latest crossover rankings generated from the pipeline.</p>
+<section class="stats"><div class="stat"><strong>2</strong><span>Ranked symbols</span></div>
+<div class="stat"><strong>0</strong><span>Bullish signals</span></div><div class="stat"><strong>2</strong><span>Bearish signals</span></div></section>
+<div class="toolbar"><strong>Watchlist</strong><input id="search" type="search" placeholder="Filter by symbol or state" aria-label="Filter signals"></div>
+<div class="table-wrap"><table class="dataframe signals-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Rank</th>
+      <th>Symbol</th>
+      <th>Close</th>
+      <th>State</th>
+      <th>Days_Since</th>
+      <th>Score</th>
+      <th>Last_Crossover_Type</th>
+      <th>SMA_20</th>
+      <th>SMA_50</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>RELIANCE</td>
+      <td>1313.80</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>-</td>
+      <td>0.0</td>
+      <td>NONE</td>
+      <td>1311.9500</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>HDFCBANK</td>
+      <td>701.05</td>
+      <td><span class="pill bearish">BEARISH</span></td>
+      <td>-</td>
+      <td>0.0</td>
+      <td>NONE</td>
+      <td>723.3625</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table></div></main>
+<script>const search=document.getElementById('search'); search.addEventListener('input',()=>{const q=search.value.toLowerCase(); document.querySelectorAll('tbody tr').forEach(r=>{r.hidden=!r.innerText.toLowerCase().includes(q)})}); document.querySelectorAll('th').forEach((h,i)=>h.addEventListener('click',()=>{const b=document.querySelector('tbody'); [...b.rows].sort((a,c)=>a.cells[i].innerText.localeCompare(c.cells[i].innerText,undefined,{numeric:true})).forEach(r=>b.appendChild(r))}));</script>
+</body></html>

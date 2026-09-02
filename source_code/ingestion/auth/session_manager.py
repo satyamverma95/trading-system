@@ -56,10 +56,11 @@ def get_authenticated_kite() -> Optional[KiteConnect]:
             kite.set_access_token(access_token)
             logger.info("Authenticated with Zerodha using access token")
             return kite
-        
-        # Otherwise, require manual login (future implementation)
-        logger.warning("No access token found. Manual login required.")
-        return kite
+
+        raise ValueError(
+            "Zerodha access token not configured. Generate today's access token "
+            "through Kite login and add 'zerodha.access_token' to config/secrets.yaml"
+        )
     
     except Exception as e:
         logger.error(f"Failed to authenticate with Zerodha: {e}")
