@@ -77,11 +77,13 @@ def load_session() -> Optional[dict]:
 
 def save_session(access_token: str, public_token: Optional[str] = None):
     """Save Zerodha session."""
-    root = Path(__file__).resolve().parents[3]
-    secrets_path = root / "config" / "secrets.yaml"
+    if not access_token or not access_token.strip():
+        raise ValueError("Cannot save an empty Zerodha access token")
+
+    secrets_path = Path(__file__).resolve().parents[3] / "config" / "secrets.yaml"
     with secrets_path.open("r", encoding="utf-8") as file_handle:
         secrets = yaml.safe_load(file_handle) or {}
-    secrets.setdefault("zerodha", {})["access_token"] = access_token
+    secrets.setdefault("zerodha", {})["access_token"] = access_token.strip()
     with secrets_path.open("w", encoding="utf-8") as file_handle:
         yaml.safe_dump(secrets, file_handle, default_flow_style=False, sort_keys=False)
-    logger.info("Saved Zerodha access token to secrets.yaml")
+    logger.info("Saved Zerodha access token")

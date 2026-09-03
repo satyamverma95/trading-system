@@ -120,11 +120,7 @@ class InstrumentResolver:
         """Save instrument master to cache."""
         try:
             cache_path = self._get_cache_path()
-            # Instrument metadata includes mixed expiry values; normalize before Parquet.
-            cache_df = df.copy()
-            if "expiry" in cache_df.columns:
-                cache_df["expiry"] = cache_df["expiry"].astype(str)
-            cache_df.to_parquet(cache_path, index=False)
+            df.to_parquet(cache_path, index=False)
             logger.debug(f"Saved {len(df)} instruments to cache: {cache_path}")
         except Exception as e:
             logger.warning(f"Failed to cache instruments: {e}")
@@ -175,15 +171,6 @@ class InstrumentResolver:
             (instruments['tradingsymbol'].str.upper() == symbol) &
             (instruments['exchange'] == exchange)
         ]
-
-        # A cache can be incomplete or stale; refresh once before reporting a miss.
-        if len(matches) == 0 and self._instruments_df is not None:
-            logger.info(f"{symbol} not found in cache; refreshing instrument master")
-            instruments = self.get_instruments(force_refresh=True)
-            matches = instruments[
-                (instruments['tradingsymbol'].str.upper() == symbol) &
-                (instruments['exchange'] == exchange)
-            ]
         
         if len(matches) == 0:
             logger.warning(f"No instrument found for {symbol} in {exchange}")
