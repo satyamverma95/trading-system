@@ -6,8 +6,9 @@ from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from kiteconnect import KiteConnect
 
@@ -80,6 +81,39 @@ def login_url():
     if not config.get("api_key"):
         raise HTTPException(status_code=400, detail="API key is not configured")
     return {"url": KiteConnect(api_key=config["api_key"]).login_url()}
+
+
+@app.get("/api/auth/callback")
+def auth_callback(request: Request):
+    """Receive Zerodha's browser redirect and return the user to React."""
+    request_token = request.query_params.get("request_token")
+    status = request.query_params.get("status")
+    frontend_url = "http://127.0.0.1:5173/"
+    if status != "success" or not request_token:
+        return RedirectResponse(f"{frontend_url}?auth=failed&reason=zerodha_login_cancelled")
+    return _finish_login(request_token, frontend_url)
+
+
+@app.get("/")
+def legacy_auth_callback(request: Request):
+    """Compatibility callback for Kite apps still configured to use port 5000."""
+    request_token = request.query_params.get("request_token")
+    status = request.query_params.get("status")
+    frontend_url = "http://127.0.0.1:5173/"
+    if status != "success" or not request_token:
+        return RedirectResponse(f"{frontend_url}?auth=failed&reason=zerodha_login_cancelled")
+    return _finish_login(request_token, frontend_url)
+
+
+def _finish_login(request_token: str, frontend_url: str):
+    try:
+        config = _config()
+        client = KiteConnect(api_key=config["api_key"])
+        session = client.generate_session(request_token, api_secret=config["api_secret"])
+        save_session(session["access_token"])
+        return RedirectResponse(f"{frontend_url}?auth=success")
+    except Exception:
+        return RedirectResponse(f"{frontend_url}?auth=failed&reason=token_exchange_failed")
 
 
 @app.post("/api/auth/login")
