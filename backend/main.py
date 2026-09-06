@@ -48,6 +48,13 @@ class AnalyzeRequest(BaseModel):
     lookback_days: Optional[int] = Field(default=None, description="Override default lookback")
 
 
+class ScreenerRequest(BaseModel):
+    universe: str = Field(default="nifty100", description="Universe: nifty100 or nifty50")
+    interval: str = Field(default="day", description="Candle interval: day")
+    max_stocks: int = Field(default=100, ge=10, le=200)
+    lookback_days: int = Field(default=180, ge=60, le=365)
+
+
 def _config() -> dict:
     return load_config().get("zerodha", {})
 
@@ -346,4 +353,56 @@ def analyze(payload: AnalyzeRequest):
         raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {exc}") from exc
+
+
+@app.post("/api/screener")
+def screener(payload: ScreenerRequest):
+    """
+    Market-wide swing screener with automated 3-tier bucketing & ranking.
+
+    Scans Nifty 100 or Nifty 50 constituents, runs the 5-dimension mathematical
+    diagnostic on each stock, and categorizes into:
+      1. PRIME_SETUPS — High Conviction / Actionable Now (ready for entry, defined risk)
+      2. DEVELOPING   — On Radar / Watchlist (bullish structure, waiting for pullback/trigger)
+      3. AVOID        — Stay Away / Broken Structure (bearish, choppy, or high risk)
+
+    Ranks candidates inside each bucket and computes market breadth indicators.
+    """
+    try:
+        # 1. Verify Kite connection
+        _kite()
+
+        # 2. Load universe symbols
+        config = load_config()
+        symbols = load_nifty100_universe()
+        if payload.universe.lower() == "nifty50":
+            symbols = symbols[:50]
+        elif payload.max_stocks:
+            symbols = symbols[:payload.max_stocks]
+
+        # 3. Fetch batch candles in parallel
+        fetcher = BatchCandleFetcher(config, provider="zerodha")
+        batch_data = fetcher.fetch_batch(
+            symbols,
+            period=f"{payload.lookback_days}d",
+            interval="1d",
+            skip_missing=True,
+        )
+
+        if not batch_data:
+            raise HTTPException(status_code=502, detail="No market data was fetched from Zerodha")
+
+        # 4. Run screener engine
+        from advisory_agent.scanner.screener import screen_batch
+        results = screen_batch(batch_data, interval=payload.interval)
+        results["universe"] = payload.universe
+        results["requested_count"] = len(symbols)
+
+        return results
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Screener failed: {exc}") from exc
+
 
