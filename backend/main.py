@@ -42,6 +42,12 @@ class SignalRequest(BaseModel):
     max_stocks: int = Field(default=20, ge=1, le=100)
 
 
+class AnalyzeRequest(BaseModel):
+    symbol: str = Field(min_length=1, max_length=30, description="NSE trading symbol e.g. RELIANCE")
+    interval: str = Field(default="day", description="Candle interval: day, 1h, 15m, 5m")
+    lookback_days: Optional[int] = Field(default=None, description="Override default lookback")
+
+
 def _config() -> dict:
     return load_config().get("zerodha", {})
 
@@ -189,3 +195,155 @@ def signals(payload: SignalRequest):
         raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Signal generation failed: {exc}") from exc
+
+
+# ── Interval → Zerodha interval string + lookback days ───────────────────────
+
+_INTERVAL_MAP = {
+    "day":   ("day",       180),
+    "1d":    ("day",       180),
+    "1h":    ("60minute",   30),
+    "60m":   ("60minute",   30),
+    "30m":   ("30minute",   20),
+    "15m":   ("15minute",   10),
+    "5m":    ("5minute",    10),
+}
+
+
+@app.post("/api/analyze")
+def analyze(payload: AnalyzeRequest):
+    """
+    Full technical advisory for a single NSE symbol.
+
+    Runs all 5 analysis dimensions (trend, momentum, volatility, volume,
+    structure), classifies the swing trade setup, fetches market context
+    (VIX, FII/DII, news), and generates a Gemini-powered advisory narrative.
+
+    Returns the complete advisory card ready for the React dashboard.
+    """
+    import asyncio
+    from datetime import date, timedelta
+
+    symbol   = payload.symbol.upper().strip()
+    interval = payload.interval.lower().strip()
+
+    kite_interval, default_lookback = _INTERVAL_MAP.get(interval, ("day", 180))
+    lookback_days = payload.lookback_days or default_lookback
+
+    try:
+        kite = _kite()
+
+        # ── 1. Resolve instrument token ───────────────────────────────────────
+        try:
+            instruments = kite.instruments("NSE")
+            token_map   = {
+                inst["tradingsymbol"]: inst["instrument_token"]
+                for inst in instruments
+            }
+            token = token_map.get(symbol)
+            if not token:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Symbol '{symbol}' not found on NSE. Check spelling."
+                )
+        except HTTPException:
+            raise
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"Instrument lookup failed: {exc}") from exc
+
+        # ── 2. Fetch OHLCV candles ────────────────────────────────────────────
+        from_date = date.today() - timedelta(days=lookback_days)
+        to_date   = date.today()
+
+        try:
+            raw_candles = kite.historical_data(
+                instrument_token=token,
+                from_date=str(from_date),
+                to_date=str(to_date),
+                interval=kite_interval,
+            )
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"Candle data fetch failed: {exc}") from exc
+
+        if not raw_candles:
+            raise HTTPException(status_code=502, detail=f"No candle data returned for {symbol}")
+
+        # Build DataFrame (Zerodha returns lowercase keys)
+        df = pd.DataFrame(raw_candles)
+        df = df.rename(columns={
+            "date":   "Datetime",
+            "open":   "Open",
+            "high":   "High",
+            "low":    "Low",
+            "close":  "Close",
+            "volume": "Volume",
+        })
+        df["Datetime"] = pd.to_datetime(df["Datetime"])
+        df = df.set_index("Datetime").sort_index()
+
+        # ── 3. Run composite analysis ─────────────────────────────────────────
+        from advisory_agent.analysis.composite import build_snapshot
+        from advisory_agent.strategies.classifier import classify
+
+        try:
+            snapshot = build_snapshot(df, symbol, interval)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+        classification = classify(snapshot)
+
+        # ── 4. Fetch market context (non-blocking, best-effort) ───────────────
+        from advisory_agent.context.vix_fetcher     import fetch_vix
+        from advisory_agent.context.fii_dii_fetcher import fetch_fii_dii
+        from advisory_agent.context.news_fetcher    import fetch_news
+
+        context = {
+            "vix":     fetch_vix(kite),
+            "fii_dii": fetch_fii_dii(),
+            "news":    fetch_news(symbol),
+        }
+
+        # ── 5. Generate advisory narrative (Gemini or rule-based) ────────────
+        from advisory_agent.intelligence.advisor import generate_advisory
+        advisory = generate_advisory(snapshot, classification, context)
+
+        # ── 6. Assemble final response ────────────────────────────────────────
+        return {
+            "symbol":           snapshot["symbol"],
+            "interval":         snapshot["interval"],
+            "ltp":              snapshot["ltp"],
+            "candle_count":     snapshot["candle_count"],
+            "computed_at":      snapshot["computed_at"],
+
+            "signal":           classification["signal"],
+            "setup_type":       classification["setup_type"],
+            "confluence":       classification["confluence"],
+            "max_confluence":   classification["max_confluence"],
+            "confluence_label": classification["confluence_label"],
+            "all_setups":       classification["all_setups"],
+
+            "risk_levels":      classification["risk_levels"],
+
+            "indicators": {
+                "trend":      snapshot["trend"],
+                "momentum":   snapshot["momentum"],
+                "volatility": snapshot["volatility"],
+                "volume":     snapshot["volume"],
+                "structure":  snapshot["structure"],
+            },
+
+            "context":          context,
+
+            "rationale": {
+                "advisory_text":     advisory["advisory_text"],
+                "source":            advisory["source"],
+                "model":             advisory["model"],
+                "rule_based_bullets": classification["bullets"],
+            },
+        }
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {exc}") from exc
+
